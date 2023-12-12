@@ -1,0 +1,223 @@
+//Gói chứa của chương trình
+        package org.example;
+
+        //Import các thư viện để sử dụng đọc dữ liệu từ bàn phím
+        import java.io.BufferedReader;
+        import java.io.IOException;
+        import java.io.InputStreamReader;
+
+        // Lớp chính của chương trình
+        public class Main {
+        // Hằng số: Độ dài tối đa của một thông điệp
+        private static final int MAX_MESSAGE_LENGTH = 250;
+
+        // Hàm khởi tạo của lớp Main (trống)
+        public Main() {
+        }
+
+        // Phương thức main, là điểm bắt đầu của chương trình
+        public static void main(String[] args) {
+        // Tạo đối tượng Queue và Stack với dung lượng tối đa là 250
+        Queue messageQueue = new Queue(250);
+        Stack messageStack = new Stack(250);
+
+        // Biến kiểm soát việc thoát khỏi vòng lặp chính
+        boolean exit = false;
+
+        // Đối tượng đọc dữ liệu từ bàn phím
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+
+        // Vòng lặp chính của chương trình
+        while (!exit) {
+        // Hiển thị menu lựa chọn
+        System.out.println("----- Menu -----");
+        System.out.println("1. Input message");
+        System.out.println("2. Send Message");
+        System.out.println("3. Received message / View message");
+        System.out.println("4. Exit");
+        System.out.print("Enter your choice: ");
+
+        // Biến để lưu trữ lựa chọn của người dùng
+        int choice;
+        try {
+        // Đọc lựa chọn từ bàn phím và chuyển thành số nguyên
+        choice = Integer.parseInt(reader.readLine());
+        } catch (IOException | NumberFormatException var7) {
+        // Xử lý ngoại lệ nếu người dùng nhập không đúng định dạng số
+        System.out.println("Invalid input. Please enter a valid choice.");
+        continue; // Tiếp tục vòng lặp
+        }
+
+        // Xử lý lựa chọn của người dùng
+        switch (choice) {
+        case 1:
+        // Chọn 1: Nhập thông điệp mới vào Queue
+        enqueueStringToQueue(messageQueue, reader);
+        break;
+        case 2:
+        // Chọn 2: Gửi thông điệp từ Queue đến Stack
+        dequeueToStack(messageQueue, messageStack);
+        break;
+        case 3:
+        // Chọn 3: Hiển thị thông điệp đã nhận từ Stack
+        System.out.println("Messages in the stack:");
+        printMessagesInStack(messageStack);
+        break;
+        case 4:
+        // Chọn 4: Thoát khỏi chương trình
+        exit = true;
+        break;
+        default:
+        // Xử lý lựa chọn không hợp lệ
+        System.out.println("Invalid choice. Please try again.");
+        }
+        }
+
+        // Thông báo kết thúc chương trình
+        System.out.println("Exiting the program.");
+        }
+
+        // Phương thức thêm một chuỗi vào Queue
+        private static void enqueueStringToQueue(Queue queue, BufferedReader reader) {
+        System.out.print("Enter the string (less than 250 characters): ");
+
+        try {
+        // Đọc chuỗi từ bàn phím
+        String input = reader.readLine();
+        // Kiểm tra và thêm chuỗi vào Queue nếu độ dài không vượt quá giới hạn
+        if (input.length() <= 250) {
+        queue.enqueue(input);
+        System.out.println("String enqueued successfully!");
+        } else {
+        System.out.println("String length exceeds 250 characters. Please try again.");
+        }
+        } catch (IOException var3) {
+        // Xử lý ngoại lệ nếu có lỗi khi đọc dữ liệu từ bàn phím
+        var3.printStackTrace();
+        }
+        }
+
+        // ...
+
+        // Phần định nghĩa của lớp Queue và lớp Stack được đặt ở dưới
+
+        // Lớp đại diện cho cấu trúc dữ liệu Queue
+        static class Queue {
+        // Các thuộc tính và phương thức của Queue
+        }
+
+        // Lớp đại diện cho cấu trúc dữ liệu Stack
+        static class Stack {
+        // Các thuộc tính và phương thức của Stack
+        }
+        }
+        // Định nghĩa lớp Queue để lưu trữ các phần tử theo cơ chế hàng đợi
+        static class Queue {
+        private String[] array; // Mảng lưu trữ các phần tử của hàng đợi
+        private int front;      // Vị trí đầu hàng đợi
+        private int rear;       // Vị trí cuối hàng đợi
+        private int capacity;   // Sức chứa tối đa của hàng đợi
+        private int size;       // Số lượng phần tử hiện tại trong hàng đợi
+
+        // Constructor khởi tạo hàng đợi với sức chứa cho trước
+        public Queue(int capacity) {
+        this.capacity = capacity;
+        this.array = new String[capacity];
+        this.front = 0;
+        this.rear = -1;
+        this.size = 0;
+        }
+
+        // Phương thức enqueue để thêm một phần tử vào cuối hàng đợi
+        public void enqueue(String element) {
+        if (this.size == this.capacity) {
+        System.out.println("Queue is full. Cannot enqueue.");
+        } else {
+        this.rear = (this.rear + 1) % this.capacity;
+        this.array[this.rear] = element;
+        ++this.size;
+        }
+        }
+
+        // Phương thức dequeue để lấy phần tử từ đầu hàng đợi
+        public String dequeue() {
+        if (this.isEmpty()) {
+        System.out.println("Queue is empty. Cannot dequeue.");
+        return null;
+        } else {
+        String element = this.array[this.front];
+        this.front = (this.front + 1) % this.capacity;
+        --this.size;
+        return element;
+        }
+        }
+
+        // Phương thức get để lấy phần tử ở một vị trí cụ thể trong hàng đợi
+        public String get(int index) {
+        if (index >= 0 && index < this.size) {
+        return this.array[(this.front + index) % this.capacity];
+        } else {
+        throw new IndexOutOfBoundsException();
+        }
+        }
+
+        // Phương thức kiểm tra xem hàng đợi có rỗng hay không
+        public boolean isEmpty() {
+        return this.size == 0;
+        }
+
+        // Phương thức trả về kích thước hiện tại của hàng đợi
+        public int size() {
+        return this.size;
+        }
+        }
+
+        // Định nghĩa lớp Stack để lưu trữ các phần tử theo cơ chế ngăn xếp
+        static class Stack {
+        private String[] array; // Mảng lưu trữ các phần tử của ngăn xếp
+        private int top;        // Vị trí đỉnh của ngăn xếp
+        private int capacity;   // Sức chứa tối đa của ngăn xếp
+        private int size;       // Số lượng phần tử hiện tại trong ngăn xếp
+
+        // Constructor khởi tạo ngăn xếp với sức chứa cho trước
+        public Stack(int capacity) {
+        this.capacity = capacity;
+        this.array = new String[capacity];
+        this.top = -1;
+        this.size = 0;
+        }
+
+        // Phương thức push để thêm một phần tử vào đỉnh ngăn xếp
+        public void push(String element) {
+        if (this.size == this.capacity) {
+        System.out.println("Stack is full. Cannot push.");
+        } else {
+        ++this.top;
+        this.array[this.top] = element;
+        ++this.size;
+        }
+        }
+
+        // Phương thức pop để lấy phần tử từ đỉnh ngăn xếp
+        public String pop() {
+        if (this.isEmpty()) {
+        System.out.println("Stack is empty. Cannot pop.");
+        return null;
+        } else {
+        String element = this.array[this.top];
+        --this.top;
+        --this.size;
+        return element;
+        }
+        }
+
+        // Phương thức kiểm tra xem ngăn xếp có rỗng hay không
+        public boolean isEmpty() {
+        return this.size == 0;
+        }
+
+        // Phương thức trả về kích thước hiện tại của ngăn xếp
+        public int size() {
+        return this.size;
+        }
+        }
